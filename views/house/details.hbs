@@ -1,0 +1,48 @@
+<section id="deatils-page">
+    {{#with house}}
+    <div class="wrapper">
+        <div class="product-img">
+            <img src="{{imageUrl}}">
+        </div>
+        <div class="product-info">
+            <div class="product-text">
+                <div class="product-text">
+                    <h1>Name: {{name}}</h1>
+                    <h2>Type: {{type}}</h2>
+                    <h4>Year: {{year}}</h4>
+                    <h4>City: {{city}}</h4>
+                    <p>Description: {{description}}</p>
+                    {{#if users}}
+                    <!-- if there are already tenants of the housing, separate their names with a comma and a space ", "  -->
+                    <p>People rented this housing: {{renters}}</p>
+                    {{else}}
+                    <!-- If not display: -->
+                    <p>People rented this housing: There are no tenants yet.</p>
+                    {{/if}}
+                </div>
+            </div>
+            {{#if loggedUser}}
+            <!-- if there is no registered user, do not display buttons-->
+            <div class="product-btn">
+                {{#if isOwner}}
+                <!-- Only for registered user and creator of the housing offer-->
+                <a href="/house/edit/{{_id}}" class="edit">Edit</a>
+                <a href="/house/delete/{{_id}}" class="remove">Delete</a>
+                {{else}}
+                <!-- logged in user with available pieces-->
+                {{#if hasRented}}
+                <p class="alRentHome">You have already rent this home</p>
+                {{else}}
+                <a href="/house/rent/{{_id}}" class="rentHome">Rent a home, available {{pieces}} housing</a>
+                {{/if}}
+                <!-- logged in user with no available pieces-->
+                {{#if noRoom}}
+                <p class="no-housing">No Housing Available!</p>
+                {{/if}}
+                {{/if}}
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    {{/with}}
+</section>
