@@ -10,23 +10,27 @@ router.get('/register', isGuest(), (req, res) => {
 router.post('/register',
     isGuest(),
     body('name')
-        
+
         .notEmpty().withMessage('Nmae is required!').bail()
         .matches('^[A-Za-z]+ [a-zA-Z]+$').withMessage('Name must be first name and last name!'),
+
     body('username')
-        
+
         .notEmpty().withMessage('Username is required!').bail()
-        .isLength({ min: 5 }).withMessage('Ussername must be at least 3 ch long!').bail(),
+        .isLength({ min: 3 }).withMessage('Ussername must be at least 3 ch long!').bail(),
+
     body('password')
-        
+
         .notEmpty().withMessage('Password is required!').bail()
-        .isLength({ men: 4 }).withMessage('Password must be min 4 symbols long!'),
-    body('rePass').custom((value, { req }) => {
-        if (value != req.body.password) {
-            throw new Error('password don\'t match!')
-        }
-        return true
-    }),
+        .isLength({ men: 3 }).withMessage('Password must be min 4 symbols long!'),
+
+    body('rePass')
+        .custom((value, { req }) => {
+            if (value != req.body.password) {
+                throw new Error('password don\'t match!')
+            }
+            return true
+        }),
     async (req, res) => {
         const { errors } = validationResult(req);
         try {
@@ -60,7 +64,7 @@ router.post('/login', isGuest(), async (req, res) => {
     try {
         await req.auth.login(req.body.username, req.body.password);
         res.redirect('/'); //TODO change redirect location 
-        
+
     } catch (err) {
         console.log(err);
         if (err.type == 'credential') {

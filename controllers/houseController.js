@@ -54,7 +54,7 @@ router.post('/create', isUser(),
             res.redirect('/house/apartForRent');
 
         } catch (err) {
-            console.log(err.message);
+            console.log(err.message); 
             const ctx = {
                 errors: err.message.split('\n'),
                 house: {
@@ -87,6 +87,7 @@ router.get('/details/:id', async (req, res) => {
             // }
             house.renters = house.users.map(u => u.name).join(', ');
             console.log(house.users);
+            console.log(house.users.map(u => u.username).join(', '));
         }
 
         res.render('house/details', { house });
@@ -99,6 +100,7 @@ router.get('/details/:id', async (req, res) => {
 router.get('/rent/:id', isUser(), async (req, res) => {
     try {
         const house = await req.storage.getOneHouse(req.params.id);
+        house.renters = house.users.map(u => u.name).join(', ');
 
         const alreadyJoined = house.users.find(u => u._id == req.user._id);
         req.body.pieces = Number(req.body.pieces);

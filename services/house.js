@@ -1,11 +1,12 @@
+const { populate } = require('../modews/House');
 const House = require('../modews/House');
 
 async function getOneHouse(id) {
-    const house = await House.findById(id).lean();
+    const house = await House.findById(id).populate('users').lean();
 
     return house;
 }
-
+ 
 
 async function getAllHouses() {
     const houses = await House.find().lean(); 
@@ -20,12 +21,12 @@ async function createHouse(houseData) {
 
     return house;
 }
-
+ 
 async function rent(userId, houseId) {
     const house = await House.findById(houseId);
 
     house.users.push(userId);
-    house.pices--;
+    house.pieces--;
 
     await house.save();
 
