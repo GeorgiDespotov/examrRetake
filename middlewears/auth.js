@@ -19,7 +19,7 @@ module.exports = () => function (req, res, next) {
             logout() {
                 res.clearCookie(COOKIE_NAME)
             }
-        }
+        } 
     }
 
     next();

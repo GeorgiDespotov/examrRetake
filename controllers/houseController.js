@@ -78,16 +78,18 @@ router.get('/details/:id', async (req, res) => {
             house.loggedUser = req.user._id;
             house.isOwner = req.user._id == house.owner;
             house.hasRented = house.users.find(u => u._id == req.user._id);
-            house.noRoom = house.pices >= 0 ? true : false;
-            let renterss;
-            // if (house.users.length > 0) {
+            house.noRoom = house.pieces <= 0 ? true : false;
+            house.freeRooms = house.pieces > 0 ? true : false;
+            
+            house.renters = house.users.map(u => u.name).join(', ');
 
-            //     renterss = house.users.map(u => u.name).join(', ');
+            // if (!house.noRoom) {
+
+            //     house.renters = house.users.map(u => u.name).join(', ');
             //     console.log('--------');
             // }
-            house.renters = house.users.map(u => u.name).join(', ');
-            console.log(house.users);
             console.log(house.users.map(u => u.username).join(', '));
+            console.log(house.hasRented);
         }
 
         res.render('house/details', { house });
@@ -118,7 +120,7 @@ router.get('/rent/:id', isUser(), async (req, res) => {
         }
 
         await req.storage.rent(req.user._id, req.params.id);
-        res.render('house/details', { house });
+        res.redirect(`/house/details/${req.params.id}`);
     } catch (err) {
         console.log(err.message);
         res.render('home/404');
@@ -207,7 +209,7 @@ router.post('/edit/:id', isUser(),
             res.redirect('/');
         } catch (err) {
             console.log(err.message);
-            res.redirect(`/house/details/${req.params.id}`);
+            res.render(`home/404`);
         }
     });
 

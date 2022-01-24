@@ -50,7 +50,7 @@ async function editHouse(Id, Data) {
 }
 
 async function deleteH(id) {
-    return HOuse.findByIdAndDelete(id);
+    return House.findByIdAndDelete(id);
 }
 
 module.exports = {

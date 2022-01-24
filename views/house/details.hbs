@@ -29,15 +29,16 @@
                 <a href="/house/edit/{{_id}}" class="edit">Edit</a>
                 <a href="/house/delete/{{_id}}" class="remove">Delete</a>
                 {{else}}
-                <!-- logged in user with available pieces-->
+                {{#if noRoom}}
+                <!-- logged in user with no available pieces-->
+                <p class="no-housing">No Housing Available!</p>
+                {{else}}
                 {{#if hasRented}}
+                <!-- logged in user with available pieces-->
                 <p class="alRentHome">You have already rent this home</p>
                 {{else}}
                 <a href="/house/rent/{{_id}}" class="rentHome">Rent a home, available {{pieces}} housing</a>
                 {{/if}}
-                <!-- logged in user with no available pieces-->
-                {{#if noRoom}}
-                <p class="no-housing">No Housing Available!</p>
                 {{/if}}
                 {{/if}}
             </div>
