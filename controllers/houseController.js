@@ -8,9 +8,10 @@ router.get('/create', isUser(), (req, res) => {
 
 router.get('/apartForRent', async (req, res) => {
     try {
+
         const houses = await req.storage.getAllHouses();
-        console.log(houses);
         res.render('house/apartForRent', { houses });
+
     } catch (err) {
         console.log(err.message);
         res.render('home/404');
@@ -54,7 +55,7 @@ router.post('/create', isUser(),
             res.redirect('/house/apartForRent');
 
         } catch (err) {
-            console.log(err.message); 
+            console.log(err.message);
             const ctx = {
                 errors: err.message.split('\n'),
                 house: {
@@ -80,7 +81,7 @@ router.get('/details/:id', async (req, res) => {
             house.hasRented = house.users.find(u => u._id == req.user._id);
             house.noRoom = house.pieces <= 0 ? true : false;
             house.freeRooms = house.pieces > 0 ? true : false;
-            
+
             house.renters = house.users.map(u => u.name).join(', ');
 
             // if (!house.noRoom) {
@@ -88,8 +89,7 @@ router.get('/details/:id', async (req, res) => {
             //     house.renters = house.users.map(u => u.name).join(', ');
             //     console.log('--------');
             // }
-            console.log(house.users.map(u => u.username).join(', '));
-            console.log(house.hasRented);
+
         }
 
         res.render('house/details', { house });
@@ -197,21 +197,40 @@ router.post('/edit/:id', isUser(),
         }
     });
 
-    router.get('/delete/:id', isUser(), async (req, res) => {
-        try {
-            const house = await req.storage.getOneHouse(req.params.id);
-    
-            if (req.user._id != house.owner) {
-                throw new Error('Only the aouthor can delete this play!');
-            }
-    
-            await req.storage.deleteH(req.params.id);
-            res.redirect('/');
-        } catch (err) {
-            console.log(err.message);
-            res.render(`home/404`);
+router.get('/delete/:id', isUser(), async (req, res) => {
+    try {
+        const house = await req.storage.getOneHouse(req.params.id);
+
+        if (req.user._id != house.owner) {
+            throw new Error('Only the aouthor can delete this play!');
         }
-    });
+       
+            await req.storage.deleteH(req.params.id);
+        
+        res.redirect('/');
+    } catch (err) {
+        console.log(err.message);
+        res.render(`home/404`);
+    }
+});
+
+router.get('/search', isUser(), async (req, res) => {
+    try {
+        console.log(req.query, '---');
+
+        const searchedHouses = await req.storage.findHouses(req.query);
+        // const ctx = {
+        //     search: req.query.search || '',
+        //     searchedHouses
+        // }
+        res.render('house/search', { searchedHouses });
+
+
+    } catch (err) {
+        console.log(err.message);
+        res.render('home/404');
+    }
+});
 
 
 module.exports = router;

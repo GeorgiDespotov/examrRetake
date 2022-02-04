@@ -6,12 +6,28 @@ async function getOneHouse(id) {
 
     return house;
 }
- 
 
-async function getAllHouses() {
-    const houses = await House.find().lean(); 
 
+async function getAllHouses(query) {
+
+    console.log('out');
+    const houses = await House.find().lean();
     return houses;
+}
+
+async function findHouses(query) {
+    const options = {};
+    console.log('here');
+
+    if (query.search) {
+        options.type = { $regex: query.search, $options: 'i' };
+        const searchedHouses = await House.find(options).lean();
+        console.log(options.type);
+        return searchedHouses;
+    }
+
+    return await House.find().lean();
+
 }
 
 async function createHouse(houseData) {
@@ -21,7 +37,7 @@ async function createHouse(houseData) {
 
     return house;
 }
- 
+
 async function rent(userId, houseId) {
     const house = await House.findById(houseId);
 
@@ -35,14 +51,14 @@ async function rent(userId, houseId) {
 
 async function editHouse(Id, Data) {
     const house = await House.findById(Id);
-    
+
     house.name = Data.name;
     house.type = Data.type;
     house.imageUrl = Data.imageUrl;
     house.year = Number(Data.year);
     house.city = Data.city;
-    house.description= Data.description;
-    house.pieces= Number(Data.pieces);
+    house.description = Data.description;
+    house.pieces = Number(Data.pieces);
 
     await house.save();
 
@@ -50,7 +66,9 @@ async function editHouse(Id, Data) {
 }
 
 async function deleteH(id) {
+
     return House.findByIdAndDelete(id);
+
 }
 
 module.exports = {
@@ -59,5 +77,6 @@ module.exports = {
     getOneHouse,
     rent,
     editHouse,
-    deleteH
+    deleteH,
+    findHouses
 };
